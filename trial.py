@@ -1,6 +1,9 @@
 import time
-
+import math
 history = []
+
+def sqrt(a):
+    return math.sqrt(a)
 
 def add(a, b):
     return a + b
@@ -21,6 +24,9 @@ def modulus(a, b):
 
 def power(a, b):
     return a ** b
+
+def square(a):
+    return a ** 2
 
 def get_positive_number(prompt):
     while True:
@@ -47,12 +53,14 @@ while True:
     print("4. Division")
     print("5. Modulus")
     print("6. Power")
-    print("7. Exit")
-    print("8. History")
+    print("7. Square Root")
+    print("8. Square")  # Added Square option here
+    print("9. Exit")
+    print("10. History")
 
-    choice = input("\nEnter your choice (1–8): ").strip()
+    choice = input("\nEnter your choice (1–10): ").strip()
 
-    if choice == '7':
+    if choice == '9':
         print("\nExiting and saving history...\n")
         with open("calc_history.txt", "w") as file:
             for entry in history:
@@ -60,7 +68,7 @@ while True:
         print("History saved to calc_history.txt")
         break
 
-    elif choice == '8':
+    elif choice == '10':
         if history:
             print("\n--- Calculation History ---")
             for entry in history:
@@ -69,12 +77,16 @@ while True:
             print("No history yet.")
         continue  # Go back to menu
 
-    elif choice not in ['1', '2', '3', '4', '5', '6']:
+    elif choice not in ['1', '2', '3', '4', '5', '6', '7', '8']:
         print("Invalid choice. Please try again.")
         continue
 
     num1 = get_positive_number("Enter the first number: ")
-    num2 = get_positive_number("Enter the second number: ")
+    
+    # For square root and square, we only need one number
+    if choice not in ['7', '8']:
+        num2 = get_positive_number("Enter the second number: ")
+
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
     if choice == '1':
@@ -95,10 +107,24 @@ while True:
     elif choice == '6':
         result = power(num1, num2)
         operator = '^'
+    elif choice == '7':
+        result = sqrt(num1)
+        operator = 'sqrt'
+        num2 = None  # No second number for square root operation
+    elif choice == '8':  # Square operation
+        result = square(num1)
+        operator = 'square'
+        num2 = None  # No second number for square operation
 
     print(f"\nThe result is: {result}")
     print("---------------------------\n")
-    history_entry = f"[{timestamp}] {num1} {operator} {num2} = {result}"
+    
+    # History entry for square and square root operations (no num2)
+    if choice in ['7', '8']:
+        history_entry = f"[{timestamp}] {operator} {num1} = {result}"
+    else:
+        history_entry = f"[{timestamp}] {num1} {operator} {num2} = {result}"
+    
     history.append(history_entry)
 
     # Ask if user wants to perform another operation
